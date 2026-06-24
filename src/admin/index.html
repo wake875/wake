@@ -1,14 +1,293 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>嘉豆食品 · 内容管理</title>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+    .header { background: #2E7D32; color: white; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .header h1 { font-size: 20px; }
+    .header button { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+    .container { max-width: 900px; margin: 24px auto; padding: 0 16px; }
+    .card { background: white; border-radius: 10px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .card h2 { font-size: 18px; margin-bottom: 16px; color: #2E7D32; border-bottom: 2px solid #E8F5E9; padding-bottom: 8px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #555; }
+    .form-group input, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; font-family: inherit; }
+    .form-group textarea { min-height: 80px; resize: vertical; }
+    .btn { padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; }
+    .btn-save { background: #2E7D32; color: white; }
+    .btn-save:hover { background: #1B5E20; }
+    .toast { position: fixed; top: 16px; right: 16px; padding: 12px 20px; border-radius: 8px; color: white; font-size: 14px; z-index: 999; animation: slideIn 0.3s; }
+    .toast.success { background: #2E7D32; }
+    .toast.error { background: #d32f2f; }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .loading { text-align: center; padding: 60px; color: #999; }
+    .login-box { max-width: 400px; margin: 100px auto; text-align: center; }
+    .login-box input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; margin-bottom: 12px; }
+  </style>
 </head>
 <body>
-  <script>
-    CMS.registerPreviewStyle('/assets/css/style.css');
-  </script>
+
+<div id="login" class="login-box" style="display:block">
+  <div class="card">
+    <h2 style="color:#333;border:none">🔐 CMS 登录</h2>
+    <div class="form-group">
+      <label>GitHub 访问令牌 (Personal Access Token)</label>
+      <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+    </div>
+    <button class="btn btn-save" onclick="login()" style="width:100%">登录</button>
+    <p style="font-size:12px;color:#999;margin-top:12px">
+      使用你的 GitHub PAT 登录。<br>
+      <a href="https://github.com/settings/tokens" target="_blank" style="color:#2E7D32">创建 Token</a> (需要 repo 权限)
+    </p>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+  <div class="header">
+    <h1>🟢 嘉豆食品 · 内容管理</h1>
+    <button onclick="logout()">退出</button>
+  </div>
+  <div class="container" id="loading"><div class="loading">加载中...</div></div>
+  <div class="container" id="content" style="display:none"></div>
+</div>
+
+<script>
+const REPO = 'wake875/wake';
+const BRANCH = 'main';
+let token = '';
+
+function showToast(msg, type='success') {
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+async function api(path, method='GET', body=null) {
+  const opts = {
+    method,
+    headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+  };
+  if (body) {
+    opts.headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(body);
+  }
+  const r = await fetch('https://api.github.com' + path, opts);
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+async function login() {
+  token = document.getElementById('tokenInput').value.trim();
+  if (!token) return showToast('请输入 Token', 'error');
+  try {
+    const user = await api('/user');
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    sessionStorage.setItem('cms_token', token);
+    loadData();
+  } catch(e) {
+    showToast('Token 无效: ' + e.message, 'error');
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('cms_token');
+  location.reload();
+}
+
+async function loadData() {
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('content').style.display = 'none';
+  
+  const files = ['src/_data/site.json', 'src/_data/hero.json', 'src/_data/about.json'];
+  const data = {};
+  for (const f of files) {
+    const info = await api(`/repos/${REPO}/contents/${f}?ref=${BRANCH}`);
+    data[f] = { sha: info.sha, content: JSON.parse(atob(info.content)) };
+  }
+  
+  // Products
+  const products = await api(`/repos/${REPO}/contents/src/content/products?ref=${BRANCH}`);
+  const productFiles = products.filter(p => p.name.endsWith('.md') && p.name !== 'index.html');
+  data.products = [];
+  for (const p of productFiles) {
+    const info = await api(`/repos/${REPO}/contents/src/content/products/${p.name}?ref=${BRANCH}`);
+    const content = atob(info.content);
+    const fm = content.match(/^---\n([\s\S]*?)\n---/);
+    if (fm) {
+      const fields = {};
+      fm[1].split('\n').forEach(line => {
+        const m = line.match(/^(\w+):\s*(.*)/);
+        if (m) fields[m[1]] = m[2].replace(/^["']|["']$/g, '');
+      });
+      data.products.push({ file: p.name, sha: info.sha, ...fields, body: content.replace(/^---[\s\S]*?---\n/, '') });
+    }
+  }
+  
+  render(data);
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+}
+
+function render(data) {
+  const site = data['src/_data/site.json'].content;
+  const hero = data['src/_data/hero.json'].content;
+  const about = data['src/_data/about.json'].content;
+  
+  let html = '';
+  
+  // Site settings
+  html += `<div class="card">
+    <h2>网站设置</h2>
+    ${fieldRow('公司名称', 'site.company_name', site.company_name)}
+    ${fieldRow('联系电话', 'site.phone', site.phone)}
+    ${fieldRow('电子邮箱', 'site.email', site.email)}
+    ${fieldRow('公司地址', 'site.address', site.address)}
+    ${fieldRow('工作时间', 'site.work_hours', site.work_hours)}
+    ${fieldRow('成立年份', 'site.founded_year', site.founded_year)}
+    ${fieldRow('注册资本(万)', 'site.capital', site.capital)}
+    ${fieldRow('超越同行%', 'site.rank_percent', site.rank_percent)}
+    <button class="btn btn-save" onclick="saveSite()">保存设置</button>
+  </div>`;
+  
+  // Hero
+  html += `<div class="card">
+    <h2>首页横幅</h2>
+    ${fieldRow('主标题第一行', 'hero.title_line1', hero.title_line1)}
+    ${fieldRow('主标题第二行', 'hero.title_line2', hero.title_line2)}
+    ${textareaRow('描述', 'hero.description', hero.description)}
+    <button class="btn btn-save" onclick="saveHero()">保存横幅</button>
+  </div>`;
+  
+  // About
+  html += `<div class="card">
+    <h2>关于我们</h2>
+    ${fieldRow('标题', 'about.title', about.title)}
+    ${fieldRow('副标题', 'about.subtitle', about.subtitle)}
+    ${textareaRow('正文 (HTML)', 'about.content', about.content)}
+    <button class="btn btn-save" onclick="saveAbout()">保存关于</button>
+  </div>`;
+  
+  // Products
+  html += `<div class="card"><h2>产品服务</h2>`;
+  data.products.forEach((p, i) => {
+    html += `<div style="border:1px solid #eee;border-radius:8px;padding:16px;margin-bottom:12px">
+      <strong>${p.title || '产品' + (i+1)}</strong>
+      ${fieldRow('名称', 'p'+i+'.title', p.title)}
+      ${fieldRow('图标(emoji)', 'p'+i+'.icon', p.icon||'')}
+      ${fieldRow('排序', 'p'+i+'.order', p.order||'0')}
+      ${textareaRow('描述', 'p'+i+'.desc', p.description||'')}
+    </div>`;
+  });
+  html += `<button class="btn btn-save" style="margin-top:12px" onclick="saveProducts()">保存全部产品</button></div>`;
+  
+  document.getElementById('content').innerHTML = html;
+  
+  // Store for saving
+  window._data = data;
+}
+
+function fieldRow(label, id, value) {
+  return `<div class="form-group"><label>${label}</label><input id="${id}" value="${(value||'').replace(/"/g,'&quot;')}"></div>`;
+}
+function textareaRow(label, id, value) {
+  return `<div class="form-group"><label>${label}</label><textarea id="${id}">${(value||'').replace(/</g,'&lt;')}</textarea></div>`;
+}
+
+async function saveFile(path, sha, content) {
+  const r = await fetch(`/api/github/save`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'token ' + token },
+    body: JSON.stringify({ path, sha, content: btoa(unescape(encodeURIComponent(content))), message: 'Update via CMS' })
+  });
+  return r.json();
+}
+
+async function commitFile(path, sha, content, msg) {
+  return api(`/repos/${REPO}/contents/${path}`, 'PUT', {
+    message: msg,
+    content: btoa(unescape(encodeURIComponent(content))),
+    sha: sha,
+    branch: BRANCH
+  });
+}
+
+async function saveSite() {
+  const d = window._data['src/_data/site.json'];
+  const obj = {
+    company_name: val('site.company_name'),
+    company_short: val('site.company_name'),
+    phone: val('site.phone'),
+    email: val('site.email'),
+    address: val('site.address'),
+    work_hours: val('site.work_hours'),
+    founded_year: val('site.founded_year'),
+    capital: val('site.capital'),
+    rank_percent: val('site.rank_percent')
+  };
+  try {
+    await commitFile('src/_data/site.json', d.sha, JSON.stringify(obj, null, 2), 'Update site settings');
+    showToast('网站设置已保存! 等待 Netlify 部署...');
+  } catch(e) { showToast('保存失败: ' + e.message, 'error'); }
+}
+
+async function saveHero() {
+  const d = window._data['src/_data/hero.json'];
+  const obj = {
+    title_line1: val('hero.title_line1'),
+    title_line2: val('hero.title_line2'),
+    description: val('hero.description')
+  };
+  try {
+    await commitFile('src/_data/hero.json', d.sha, JSON.stringify(obj, null, 2), 'Update hero');
+    showToast('首页横幅已保存!');
+  } catch(e) { showToast('保存失败: ' + e.message, 'error'); }
+}
+
+async function saveAbout() {
+  const d = window._data['src/_data/about.json'];
+  const obj = {
+    title: val('about.title'),
+    subtitle: val('about.subtitle'),
+    content: val('about.content')
+  };
+  try {
+    await commitFile('src/_data/about.json', d.sha, JSON.stringify(obj, null, 2), 'Update about');
+    showToast('关于我们已保存!');
+  } catch(e) { showToast('保存失败: ' + e.message, 'error'); }
+}
+
+async function saveProducts() {
+  const prods = window._data.products;
+  for (let i = 0; i < prods.length; i++) {
+    const fm = `---\ntitle: "${val('p'+i+'.title')}"\norder: ${val('p'+i+'.order')||'0'}\nicon: "${val('p'+i+'.icon')||''}"\ndescription: >\n  ${val('p'+i+'.desc')||''}\n---`;
+    try {
+      await commitFile('src/content/products/' + prods[i].file, prods[i].sha, fm, 'Update product: ' + val('p'+i+'.title'));
+    } catch(e) { showToast('产品保存失败: ' + e.message, 'error'); return; }
+  }
+  showToast('所有产品已保存! 等待 Netlify 自动部署...');
+}
+
+function val(id) { const el = document.getElementById(id); return el ? el.value : ''; }
+
+// Auto-login
+if (sessionStorage.getItem('cms_token')) {
+  token = sessionStorage.getItem('cms_token');
+  api('/user').then(() => {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadData();
+  }).catch(() => {
+    sessionStorage.removeItem('cms_token');
+    document.getElementById('login').style.display = 'block';
+  });
+}
+</script>
 </body>
 </html>
