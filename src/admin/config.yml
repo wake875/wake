@@ -1,8 +1,6 @@
 backend:
-  name: github
-  repo: wake875/wake
+  name: git-gateway
   branch: main
-  base_url: https://decap-cms-oauth.vercel.app
 
 media_folder: "src/assets/images"
 public_folder: "/assets/images"
