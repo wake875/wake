@@ -1,0 +1,56 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "src/assets/images"
+public_folder: "/assets/images"
+
+collections:
+  - name: "settings"
+    label: "网站设置"
+    editor:
+      preview: false
+    files:
+      - name: "general"
+        label: "基本信息"
+        file: "src/_data/site.json"
+        fields:
+          - { label: "公司名称", name: "company_name", widget: "string" }
+          - { label: "公司简称", name: "company_short", widget: "string" }
+          - { label: "联系电话", name: "phone", widget: "string" }
+          - { label: "电子邮箱", name: "email", widget: "string" }
+          - { label: "公司地址", name: "address", widget: "string" }
+          - { label: "工作时间", name: "work_hours", widget: "string" }
+          - { label: "成立年份", name: "founded_year", widget: "string" }
+          - { label: "注册资本(万)", name: "capital", widget: "string" }
+          - { label: "超越同行百分比", name: "rank_percent", widget: "string" }
+      - name: "hero"
+        label: "首页横幅"
+        file: "src/_data/hero.json"
+        fields:
+          - { label: "主标题第一行", name: "title_line1", widget: "string" }
+          - { label: "主标题第二行", name: "title_line2", widget: "string" }
+          - { label: "描述文字", name: "description", widget: "text" }
+  - name: "products"
+    label: "产品服务"
+    folder: "src/content/products"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "产品名称", name: "title", widget: "string" }
+      - { label: "排序", name: "order", widget: "number", default: 0 }
+      - { label: "图标(emoji)", name: "icon", widget: "string", required: false }
+      - { label: "产品图片", name: "image", widget: "image", required: false }
+      - { label: "产品描述", name: "description", widget: "text" }
+  - name: "pages"
+    label: "页面内容"
+    editor:
+      preview: false
+    files:
+      - name: "about"
+        label: "关于我们"
+        file: "src/_data/about.json"
+        fields:
+          - { label: "标题", name: "title", widget: "string" }
+          - { label: "副标题", name: "subtitle", widget: "string" }
+          - { label: "正文(HTML)", name: "content", widget: "text" }

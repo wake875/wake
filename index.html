@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>鹰潭嘉豆食品有限公司 — 农副食品加工专家</title>
+  <meta name="description" content="鹰潭嘉豆食品有限公司成立于2022年，位于江西省鹰潭市，专注于农副食品加工，注册资本50万元，服务覆盖江西省及周边地区。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2E7D32;
+      --primary-dark: #1B5E20;
+      --primary-light: #E8F5E9;
+      --accent: #C8A03A;
+      --accent-light: #FDF6E3;
+      --dark: #1a1a2e;
+      --gray-50: #f8f9fa;
+      --gray-100: #e9ecef;
+      --gray-200: #dee2e6;
+      --gray-600: #6c757d;
+      --gray-800: #343a40;
+      --white: #ffffff;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.10);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--dark);
+      line-height: 1.7;
+      background: var(--white);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ========== NAVBAR ========== */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: rgba(255,255,255,0.92); backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid transparent;
+      transition: all 0.3s ease;
+      padding: 0 40px;
+    }
+    .navbar.scrolled { border-bottom-color: var(--gray-100); box-shadow: var(--shadow-sm); }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px;
+    }
+    .nav-logo {
+      font-size: 20px; font-weight: 700; color: var(--primary-dark);
+      text-decoration: none; display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo .logo-icon {
+      width: 40px; height: 40px; background: var(--primary);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 20px; font-weight: 900;
+    }
+    .nav-links { display: flex; gap: 36px; list-style: none; align-items: center; }
+    .nav-links a {
+      text-decoration: none; color: var(--gray-800); font-size: 15px;
+      font-weight: 500; transition: color 0.2s; position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px;
+      background: var(--primary); transition: width 0.3s ease;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-cta {
+      padding: 10px 24px; background: var(--primary); color: white !important;
+      border-radius: 50px; font-weight: 600; transition: all 0.3s ease !important;
+    }
+    .nav-cta:hover { background: var(--primary-dark); transform: translateY(-1px); }
+    .nav-cta::after { display: none !important; }
+
+    /* Mobile menu */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; }
+    .hamburger span { width: 24px; height: 2px; background: var(--dark); border-radius: 2px; transition: all 0.3s; }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    /* ========== HERO ========== */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center;
+      background: linear-gradient(135deg, #f0f7f0 0%, #e8f0e4 30%, #f9faf7 60%, #f5f8f2 100%);
+      position: relative; overflow: hidden; padding-top: 72px;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -50%; right: -20%;
+      width: 700px; height: 700px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(46,125,50,0.06) 0%, transparent 70%);
+    }
+    .hero::after {
+      content: ''; position: absolute; bottom: -30%; left: -10%;
+      width: 500px; height: 500px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,160,58,0.06) 0%, transparent 70%);
+    }
+    .hero-content {
+      max-width: 1200px; margin: 0 auto; padding: 80px 40px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+      position: relative; z-index: 1;
+    }
+    .hero-text h1 {
+      font-size: 52px; font-weight: 900; line-height: 1.2; color: var(--dark);
+      margin-bottom: 24px;
+    }
+    .hero-text h1 .highlight { color: var(--primary); }
+    .hero-text p {
+      font-size: 18px; color: var(--gray-600); margin-bottom: 40px; max-width: 500px;
+    }
+    .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn { display: inline-block; padding: 14px 32px; border-radius: 50px;
+      font-size: 16px; font-weight: 600; text-decoration: none; cursor: pointer;
+      transition: all 0.3s ease; border: none; font-family: inherit;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(46,125,50,0.3); }
+    .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+    .btn-outline:hover { background: var(--primary); color: white; transform: translateY(-2px); }
+    .hero-visual {
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero-card {
+      background: white; border-radius: 20px; padding: 40px;
+      box-shadow: var(--shadow-lg); position: relative;
+    }
+    .hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .stat-item { text-align: center; padding: 20px; background: var(--gray-50); border-radius: var(--radius-sm); }
+    .stat-item .stat-num { font-size: 32px; font-weight: 900; color: var(--primary); }
+    .stat-item .stat-label { font-size: 13px; color: var(--gray-600); margin-top: 4px; }
+    .hero-badge {
+      position: absolute; top: -16px; right: -16px;
+      background: var(--accent); color: white; padding: 10px 20px; border-radius: 50px;
+      font-size: 13px; font-weight: 600; box-shadow: 0 4px 15px rgba(200,160,58,0.3);
+    }
+
+    /* ========== SECTION COMMON ========== */
+    section { padding: 100px 40px; }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 64px; }
+    .section-label { font-size: 13px; font-weight: 700; color: var(--primary); text-transform: uppercase;
+      letter-spacing: 2px; margin-bottom: 12px; }
+    .section-title { font-size: 38px; font-weight: 900; color: var(--dark); margin-bottom: 16px; }
+    .section-desc { font-size: 17px; color: var(--gray-600); max-width: 600px; margin: 0 auto; }
+
+    /* ========== ABOUT ========== */
+    .about { background: var(--white); }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    }
+    .about-image {
+      aspect-ratio: 4/3; background: linear-gradient(135deg, var(--primary-light), #e0f0e0);
+      border-radius: var(--radius); display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .about-image .icon-large { font-size: 80px; opacity: 0.6; }
+    .about-image::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .about-text h3 { font-size: 28px; font-weight: 700; margin-bottom: 20px; color: var(--dark); }
+    .about-text p { color: var(--gray-600); margin-bottom: 16px; font-size: 16px; }
+    .about-highlights { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 32px; }
+    .highlight-card {
+      padding: 20px; background: var(--gray-50); border-radius: var(--radius-sm);
+      border-left: 3px solid var(--primary); transition: all 0.3s ease;
+    }
+    .highlight-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .highlight-card .hl-num { font-size: 28px; font-weight: 900; color: var(--primary); }
+    .highlight-card .hl-text { font-size: 14px; color: var(--gray-600); margin-top: 4px; }
+
+    /* ========== PRODUCTS ========== */
+    .products { background: var(--gray-50); }
+    .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .product-card {
+      background: white; border-radius: var(--radius); padding: 36px 28px;
+      box-shadow: var(--shadow-sm); transition: all 0.3s ease;
+      text-align: center;
+    }
+    .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .product-icon {
+      width: 72px; height: 72px; background: var(--primary-light); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;
+      font-size: 36px;
+    }
+    .product-card h4 { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: var(--dark); }
+    .product-card p { font-size: 14px; color: var(--gray-600); line-height: 1.8; }
+
+    /* ========== CAPABILITY ========== */
+    .capability-strip {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white; padding: 60px 0;
+    }
+    .capability-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px;
+      text-align: center; max-width: 1200px; margin: 0 auto; padding: 0 40px;
+    }
+    .cap-item .cap-num { font-size: 42px; font-weight: 900; }
+    .cap-item .cap-label { font-size: 15px; opacity: 0.85; margin-top: 8px; }
+
+    /* ========== CONTACT ========== */
+    .contact { background: var(--white); }
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: start;
+    }
+    .contact-info h3 { font-size: 28px; font-weight: 700; margin-bottom: 20px; }
+    .contact-info p { color: var(--gray-600); margin-bottom: 32px; }
+    .contact-items { display: flex; flex-direction: column; gap: 20px; }
+    .contact-item {
+      display: flex; gap: 16px; align-items: flex-start; padding: 16px;
+      background: var(--gray-50); border-radius: var(--radius-sm); transition: all 0.3s;
+    }
+    .contact-item:hover { background: var(--primary-light); }
+    .contact-item .ci-icon {
+      width: 44px; height: 44px; background: var(--primary); color: white;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .contact-item .ci-text strong { display: block; font-size: 15px; margin-bottom: 2px; }
+    .contact-item .ci-text span { font-size: 14px; color: var(--gray-600); }
+
+    .contact-form {
+      background: var(--gray-50); border-radius: var(--radius); padding: 40px;
+      box-shadow: var(--shadow-md);
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--dark); }
+    .form-group input,
+    .form-group textarea {
+      width: 100%; padding: 14px 16px; border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm); font-size: 15px; font-family: inherit;
+      transition: all 0.3s; background: white;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(46,125,50,0.1);
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-submit {
+      width: 100%; padding: 16px; background: var(--primary); color: white;
+      border: none; border-radius: 50px; font-size: 16px; font-weight: 600;
+      cursor: pointer; transition: all 0.3s; font-family: inherit;
+    }
+    .form-submit:hover { background: var(--primary-dark); transform: translateY(-1px); }
+
+    /* ========== FOOTER ========== */
+    .footer {
+      background: var(--dark); color: rgba(255,255,255,0.7); padding: 60px 40px 30px;
+    }
+    .footer-inner { max-width: 1200px; margin: 0 auto; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 40px; }
+    .footer-brand h4 { font-size: 22px; color: white; margin-bottom: 12px; }
+    .footer-brand p { font-size: 14px; line-height: 1.8; }
+    .footer-col h5 { font-size: 15px; color: white; margin-bottom: 16px; font-weight: 600; }
+    .footer-col a { display: block; color: rgba(255,255,255,0.6); text-decoration: none;
+      font-size: 14px; margin-bottom: 10px; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--accent); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px;
+      text-align: center; font-size: 13px;
+    }
+
+    /* Back to top */
+    .back-top {
+      position: fixed; bottom: 32px; right: 32px; width: 48px; height: 48px;
+      background: var(--primary); color: white; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; cursor: pointer; border: none;
+      font-size: 20px; box-shadow: var(--shadow-md); transition: all 0.3s;
+      opacity: 0; transform: translateY(20px); pointer-events: none; z-index: 999;
+    }
+    .back-top.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .back-top:hover { background: var(--primary-dark); transform: translateY(-3px); }
+
+    /* Animations */
+    .fade-up {
+      opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 1024px) {
+      .hero-content { grid-template-columns: 1fr; text-align: center; }
+      .hero-text p { max-width: 100%; }
+      .hero-buttons { justify-content: center; }
+      .hero-visual { order: -1; }
+      .hero-card { max-width: 420px; margin: 0 auto; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      .capability-grid { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+      .about-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        position: fixed; top: 0; right: -100%; width: 280px; height: 100vh;
+        background: white; flex-direction: column; padding: 100px 40px;
+        gap: 24px; transition: right 0.3s ease; box-shadow: var(--shadow-lg);
+      }
+      .nav-links.active { right: 0; }
+      section { padding: 60px 20px; }
+      .hero-content { padding: 40px 20px; }
+      .hero-text h1 { font-size: 34px; }
+      .section-title { font-size: 28px; }
+      .products-grid { grid-template-columns: 1fr; }
+      .capability-grid { grid-template-columns: 1fr 1fr; }
+      .about-highlights { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .navbar { padding: 0 20px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-buttons { flex-direction: column; }
+      .btn { text-align: center; }
+      .capability-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== NAVBAR ==================== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <span class="logo-icon">嘉</span>
+        鹰潭嘉豆食品
+      </a>
+      <div class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home">首页</a></li>
+        <li><a href="#about">关于我们</a></li>
+        <li><a href="#products">产品服务</a></li>
+        <li><a href="#contact">联系我们</a></li>
+        <li><a href="#contact" class="nav-cta">立即咨询</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ==================== HERO / 首页 ==================== -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-text fade-up">
+        <h1>匠心<span class="highlight">加工</span><br>品质豆制品新标杆</h1>
+        <p>鹰潭嘉豆食品有限公司，深耕农副食品加工领域，以传统工艺融合现代标准，为千家万户带来安全、营养、美味的豆制品。</p>
+        <div class="hero-buttons">
+          <a href="#products" class="btn btn-primary">了解产品</a>
+          <a href="#about" class="btn btn-outline">关于我们</a>
+        </div>
+      </div>
+      <div class="hero-visual fade-up">
+        <div class="hero-card">
+          <div class="hero-badge">江西省优质企业</div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-num">50<span style="font-size:18px">万</span></div>
+              <div class="stat-label">注册资本 (RMB)</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">78<span style="font-size:18px">%</span></div>
+              <div class="stat-label">超越江西省同行</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">2022</div>
+              <div class="stat-label">成立年份</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">ISO</div>
+              <div class="stat-label">标准化生产体系</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== ABOUT / 关于我们 ==================== -->
+  <section class="about" id="about">
+    <div class="section-inner">
+      <div class="section-header fade-up">
+        <div class="section-label">ABOUT US</div>
+        <h2 class="section-title">关于我们</h2>
+        <p class="section-desc">扎根赣鄱大地，以品质铸就品牌，以诚信赢得信赖</p>
+      </div>
+      <div class="about-grid">
+        <div class="about-image fade-up">
+          <span class="icon-large">🌾</span>
+        </div>
+        <div class="about-text fade-up">
+          <h3>鹰潭嘉豆食品有限公司</h3>
+          <p>鹰潭嘉豆食品有限公司成立于<strong>2022年</strong>，位于江西省鹰潭市，是一家以从事农副食品加工业为主的现代化企业。公司注册资本<strong>50万元人民币</strong>，在同行业中具有较强的资本实力，超过了<strong>78%</strong>的江西省同行企业。</p>
+          <p>公司自成立以来，始终坚持"质量为本、诚信经营"的理念，引进先进的生产设备和加工工艺，建立了完善的质量管理体系。我们专注于豆制品及农副产品的精深加工，产品涵盖多个品类，深受市场好评。</p>
+          <p>依托鹰潭丰富的农业资源和优越的地理位置，嘉豆食品正以稳健的步伐，向着成为江西省农副食品加工领域标杆企业的目标不断迈进。</p>
+          <div class="about-highlights">
+            <div class="highlight-card">
+              <div class="hl-num">2022年</div>
+              <div class="hl-text">公司成立，扎根鹰潭</div>
+            </div>
+            <div class="highlight-card">
+              <div class="hl-num">50万</div>
+              <div class="hl-text">注册资本，实力雄厚</div>
+            </div>
+            <div class="highlight-card">
+              <div class="hl-num">Top 22%</div>
+              <div class="hl-text">超越78%江西同行</div>
+            </div>
+            <div class="highlight-card">
+              <div class="hl-num">ISO标准</div>
+              <div class="hl-text">标准化质量管理</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CAPABILITY STRIP ==================== -->
+  <section class="capability-strip">
+    <div class="capability-grid">
+      <div class="cap-item fade-up">
+        <div class="cap-num">3+</div>
+        <div class="cap-label">年行业深耕</div>
+      </div>
+      <div class="cap-item fade-up">
+        <div class="cap-num">50万</div>
+        <div class="cap-label">注册资本（元）</div>
+      </div>
+      <div class="cap-item fade-up">
+        <div class="cap-num">100+</div>
+        <div class="cap-label">服务客户</div>
+      </div>
+      <div class="cap-item fade-up">
+        <div class="cap-num">0</div>
+        <div class="cap-label">质量投诉</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PRODUCTS / 产品服务 ==================== -->
+  <section class="products" id="products">
+    <div class="section-inner">
+      <div class="section-header fade-up">
+        <div class="section-label">PRODUCTS &AMP; SERVICES</div>
+        <h2 class="section-title">产品服务</h2>
+        <p class="section-desc">精选优质原料，严格把控每一道工序，提供安全健康的农副食品</p>
+      </div>
+      <div class="products-grid">
+        <div class="product-card fade-up">
+          <div class="product-icon">🫘</div>
+          <h4>豆制品加工</h4>
+          <p>传统工艺结合现代技术，生产豆腐、豆干、豆皮、腐竹等各类豆制品，口感纯正，营养丰富，满足多样化市场需求。</p>
+        </div>
+        <div class="product-card fade-up">
+          <div class="product-icon">🌱</div>
+          <h4>农产品初加工</h4>
+          <p>对大豆、谷物等农产品进行分级、清洗、干燥、包装等初加工服务，提升农产品附加值，延长保质期。</p>
+        </div>
+        <div class="product-card fade-up">
+          <div class="product-icon">📦</div>
+          <h4>食品分装包装</h4>
+          <p>提供标准化食品分装与包装服务，采用先进真空包装及气调包装技术，确保产品新鲜度与运输安全。</p>
+        </div>
+        <div class="product-card fade-up">
+          <div class="product-icon">🔬</div>
+          <h4>品质检测服务</h4>
+          <p>配备专业检测设备和人员，对原料入库、生产过程、成品出厂进行全程质量监控，严格执行食品安全标准。</p>
+        </div>
+        <div class="product-card fade-up">
+          <div class="product-icon">🚚</div>
+          <h4>冷链仓储物流</h4>
+          <p>拥有完善的冷链仓储设施和物流配送体系，确保产品从工厂到终端的新鲜品质，覆盖江西省及周边地区。</p>
+        </div>
+        <div class="product-card fade-up">
+          <div class="product-icon">🤝</div>
+          <h4>OEM/ODM代工</h4>
+          <p>承接各类豆制品及农副食品的代工生产，可根据客户需求定制配方、规格及包装方案，灵活满足品牌方需求。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CONTACT / 联系我们 ==================== -->
+  <section class="contact" id="contact">
+    <div class="section-inner">
+      <div class="section-header fade-up">
+        <div class="section-label">CONTACT US</div>
+        <h2 class="section-title">联系我们</h2>
+        <p class="section-desc">期待与您的合作，欢迎随时来电或来访洽谈</p>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-info fade-up">
+          <h3>联系方式</h3>
+          <p>如您对我们的产品和服务感兴趣，欢迎通过以下方式与我们取得联系，我们将竭诚为您服务。</p>
+          <div class="contact-items">
+            <div class="contact-item">
+              <div class="ci-icon">📍</div>
+              <div class="ci-text">
+                <strong>公司地址</strong>
+                <span>江西省鹰潭市</span>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="ci-icon">📞</div>
+              <div class="ci-text">
+                <strong>联系电话</strong>
+                <span>19577897309</span>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="ci-icon">📧</div>
+              <div class="ci-text">
+                <strong>电子邮箱</strong>
+                <span>2948622579@qq.com</span>
+              </div>
+            </div>
+            <div class="contact-item">
+              <div class="ci-icon">🕐</div>
+              <div class="ci-text">
+                <strong>工作时间</strong>
+                <span>周一至周六 08:00 - 18:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-form fade-up">
+          <div class="form-group">
+            <label for="name">您的姓名 *</label>
+            <input type="text" id="name" placeholder="请输入您的姓名" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">联系电话 *</label>
+            <input type="tel" id="phone" placeholder="请输入您的联系电话" required>
+          </div>
+          <div class="form-group">
+            <label for="email">电子邮箱</label>
+            <input type="email" id="email" placeholder="请输入您的电子邮箱">
+          </div>
+          <div class="form-group">
+            <label for="message">咨询内容 *</label>
+            <textarea id="message" placeholder="请描述您的需求或问题..." required></textarea>
+          </div>
+          <button class="form-submit" id="submitBtn">提交咨询</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>鹰潭嘉豆食品有限公司</h4>
+          <p>专注于农副食品加工领域，以品质铸就品牌，以诚信赢得信赖。致力于为消费者提供安全、营养、美味的豆制品及农副产品。</p>
+        </div>
+        <div class="footer-col">
+          <h5>快速导航</h5>
+          <a href="#home">首页</a>
+          <a href="#about">关于我们</a>
+          <a href="#products">产品服务</a>
+          <a href="#contact">联系我们</a>
+        </div>
+        <div class="footer-col">
+          <h5>产品服务</h5>
+          <a href="#products">豆制品加工</a>
+          <a href="#products">农产品初加工</a>
+          <a href="#products">食品分装包装</a>
+          <a href="#products">OEM代工</a>
+        </div>
+        <div class="footer-col">
+          <h5>联系方式</h5>
+          <a>江西省鹰潭市</a>
+          <a>2948622579@qq.com</a>
+          <a>周一至周六 08:00-18:00</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2022-2026 鹰潭嘉豆食品有限公司 版权所有 | 赣ICP备XXXXXXXX号</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top -->
+  <button class="back-top" id="backTop" aria-label="返回顶部">↑</button>
+
+  <script>
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    const backTop = document.getElementById('backTop');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 100) {
+        navbar.classList.add('scrolled');
+        backTop.classList.add('visible');
+      } else {
+        navbar.classList.remove('scrolled');
+        backTop.classList.remove('visible');
+      }
+    });
+
+    // Back to top
+    backTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Mobile menu toggle
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navLinks.classList.toggle('active');
+    });
+
+    // Close mobile menu on link click
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navLinks.classList.remove('active');
+      });
+    });
+
+    // Scroll animation
+    const fadeEls = document.querySelectorAll('.fade-up');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    fadeEls.forEach(el => observer.observe(el));
+
+    // Form submission
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      if (!name || !phone || !message) {
+        alert('请填写必填字段（姓名、联系电话、咨询内容）');
+        return;
+      }
+
+      alert('感谢您的咨询！您的信息已提交，我们将尽快与您联系。');
+      // Clear form
+      document.getElementById('name').value = '';
+      document.getElementById('phone').value = '';
+      document.getElementById('email').value = '';
+      document.getElementById('message').value = '';
+    });
+  </script>
+</body>
+</html>
