@@ -534,7 +534,7 @@
             </div>
           </div>
         </div>
-        <form name="contact" method="POST" data-netlify="true" action="/" class="contact-form fade-up" id="contactForm" onsubmit="handleFormSubmit(event)">
+        <form name="contact" method="POST" data-netlify="true" class="contact-form fade-up" id="contactForm">
           <input type="hidden" name="form-name" value="contact">
           <div class="form-group">
             <label for="name">您的姓名 *</label>
@@ -554,6 +554,22 @@
           </div>
           <button type="submit" class="form-submit" id="submitBtn">提交咨询</button>
         </form>
+        <script>
+          document.getElementById('contactForm').addEventListener('submit', function(e) {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const message = document.getElementById('message').value.trim();
+            if (!name || !phone || !message) {
+              e.preventDefault();
+              alert('请填写必填字段（姓名、联系电话、咨询内容）');
+              return;
+            }
+            // Let Netlify Forms handle the submission
+            setTimeout(function() {
+              alert('感谢您的咨询！您的信息已提交，我们将尽快与您联系。');
+            }, 500);
+          });
+        </script>
       </div>
     </div>
   </section>
