@@ -3,12 +3,18 @@
   publish = "deploy"
   functions = "netlify/functions"
 
-[[redirects]]
-  from = "/.netlify/functions/oauth"
-  to = "/.netlify/functions/oauth"
-  status = 200
-
+# SPA fallback - only for GET (not POST for forms)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  force = false
+  conditions = {Method = ["GET"]}
+
+# Also handle POST to root for Netlify Forms
+[[redirects]]
+  from = "/"
+  to = "/index.html"
+  status = 200
+  force = false
+  conditions = {Method = ["GET"]}
