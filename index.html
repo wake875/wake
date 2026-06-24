@@ -534,25 +534,26 @@
             </div>
           </div>
         </div>
-        <div class="contact-form fade-up">
+        <form name="contact" method="POST" data-netlify="true" class="contact-form fade-up" id="contactForm">
+          <input type="hidden" name="form-name" value="contact">
           <div class="form-group">
             <label for="name">您的姓名 *</label>
-            <input type="text" id="name" placeholder="请输入您的姓名" required>
+            <input type="text" id="name" name="name" placeholder="请输入您的姓名" required>
           </div>
           <div class="form-group">
             <label for="phone">联系电话 *</label>
-            <input type="tel" id="phone" placeholder="请输入您的联系电话" required>
+            <input type="tel" id="phone" name="phone" placeholder="请输入您的联系电话" required>
           </div>
           <div class="form-group">
             <label for="email">电子邮箱</label>
-            <input type="email" id="email" placeholder="请输入您的电子邮箱">
+            <input type="email" id="email" name="email" placeholder="请输入您的电子邮箱">
           </div>
           <div class="form-group">
             <label for="message">咨询内容 *</label>
-            <textarea id="message" placeholder="请描述您的需求或问题..." required></textarea>
+            <textarea id="message" name="message" placeholder="请描述您的需求或问题..." required></textarea>
           </div>
-          <button class="form-submit" id="submitBtn">提交咨询</button>
-        </div>
+          <button type="submit" class="form-submit" id="submitBtn">提交咨询</button>
+        </form>
       </div>
     </div>
   </section>
@@ -645,24 +646,20 @@
 
     fadeEls.forEach(el => observer.observe(el));
 
-    // Form submission
-    document.getElementById('submitBtn').addEventListener('click', () => {
-      const name = document.getElementById('name').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-      const message = document.getElementById('message').value.trim();
-
-      if (!name || !phone || !message) {
-        alert('请填写必填字段（姓名、联系电话、咨询内容）');
-        return;
-      }
-
-      alert('感谢您的咨询！您的信息已提交，我们将尽快与您联系。');
-      // Clear form
-      document.getElementById('name').value = '';
-      document.getElementById('phone').value = '';
-      document.getElementById('email').value = '';
-      document.getElementById('message').value = '';
-    });
+    // Form submission - Netlify Forms
+    const form = document.getElementById('contactForm');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const message = document.getElementById('message').value.trim();
+        if (!name || !phone || !message) {
+          e.preventDefault();
+          alert('请填写必填字段（姓名、联系电话、咨询内容）');
+          return;
+        }
+      });
+    }
   </script>
 </body>
 </html>
