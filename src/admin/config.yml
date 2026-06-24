@@ -2,7 +2,7 @@ backend:
   name: github
   repo: wake875/wake
   branch: main
-  base_url: https://decap-cms-oauth.vercel.app
+  base_url: https://yingtan-jiadou-food.netlify.app
 
 media_folder: "src/assets/images"
 public_folder: "/assets/images"
