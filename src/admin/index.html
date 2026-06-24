@@ -101,6 +101,13 @@ function logout() {
   location.reload();
 }
 
+function b64decode(str) {
+  const bin = atob(str);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
 async function loadData() {
   document.getElementById('loading').style.display = 'block';
   document.getElementById('content').style.display = 'none';
@@ -109,7 +116,7 @@ async function loadData() {
   const data = {};
   for (const f of files) {
     const info = await api(`/repos/${REPO}/contents/${f}?ref=${BRANCH}`);
-    data[f] = { sha: info.sha, content: JSON.parse(atob(info.content)) };
+    data[f] = { sha: info.sha, content: JSON.parse(b64decode(info.content)) };
   }
   
   // Products
@@ -118,7 +125,7 @@ async function loadData() {
   data.products = [];
   for (const p of productFiles) {
     const info = await api(`/repos/${REPO}/contents/src/content/products/${p.name}?ref=${BRANCH}`);
-    const content = atob(info.content);
+    const content = b64decode(info.content);
     const fm = content.match(/^---\n([\s\S]*?)\n---/);
     if (fm) {
       const fields = {};
@@ -209,10 +216,18 @@ async function saveFile(path, sha, content) {
   return r.json();
 }
 
+function b64encode(str) {
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(str);
+  let bin = '';
+  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  return btoa(bin);
+}
+
 async function commitFile(path, sha, content, msg) {
   return api(`/repos/${REPO}/contents/${path}`, 'PUT', {
     message: msg,
-    content: btoa(unescape(encodeURIComponent(content))),
+    content: b64encode(content),
     sha: sha,
     branch: BRANCH
   });
