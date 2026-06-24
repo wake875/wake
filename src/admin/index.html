@@ -137,6 +137,14 @@ async function loadData() {
     }
   }
   
+  // Load messages
+  try {
+    const msgInfo = await api(`/repos/${REPO}/contents/src/_data/messages.json?ref=${BRANCH}`);
+    data.messages = { sha: msgInfo.sha, content: JSON.parse(b64decode(msgInfo.content)) };
+  } catch(e) {
+    data.messages = { sha: null, content: [] };
+  }
+  
   render(data);
   document.getElementById('loading').style.display = 'none';
   document.getElementById('content').style.display = 'block';
@@ -193,6 +201,12 @@ function render(data) {
     </div>`;
   });
   html += `<button class="btn btn-save" style="margin-top:12px" onclick="saveProducts()">保存全部产品</button></div>`;
+  
+  // Messages
+  html += `<div class="card">
+    <h2>📩 客户留言</h2>
+    <p style="font-size:13px;color:#666;margin-bottom:12px">网站表单使用 Netlify Forms，提交后可在下方查看</p>
+    <a href="https://app.netlify.com/projects/yingtan-jiadou-food/forms" target="_blank" style="display:inline-block;background:#1a1a2e;color:white;padding:8px 16px;border-radius:6px;text-decoration:none;font-size:13px;margin-bottom:16px">📋 在 Netlify 查看留言</a>`;
   
   document.getElementById('content').innerHTML = html;
   
@@ -287,6 +301,19 @@ async function saveProducts() {
     } catch(e) { showToast('产品保存失败: ' + e.message, 'error'); return; }
   }
   showToast('所有产品已保存! 等待 Netlify 自动部署...');
+}
+
+async function deleteMsg(idx) {
+  const d = window._data.messages;
+  d.content.splice(idx, 1);
+  try {
+    await commitFile('src/_data/messages.json', d.sha, JSON.stringify(d.content, null, 2), 'Delete message');
+    showToast('留言已删除');
+    // Refresh SHA
+    const info = await api(`/repos/${REPO}/contents/src/_data/messages.json?ref=${BRANCH}`);
+    d.sha = info.sha;
+    loadData();
+  } catch(e) { showToast('删除失败: ' + e.message, 'error'); }
 }
 
 function val(id) { const el = document.getElementById(id); return el ? el.value : ''; }
