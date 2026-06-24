@@ -534,7 +534,7 @@
             </div>
           </div>
         </div>
-        <form name="contact" method="POST" data-netlify="true" class="contact-form fade-up" id="contactForm">
+        <form name="contact" method="POST" data-netlify="true" action="/" class="contact-form fade-up" id="contactForm" onsubmit="handleFormSubmit(event)">
           <input type="hidden" name="form-name" value="contact">
           <div class="form-group">
             <label for="name">您的姓名 *</label>
@@ -646,19 +646,26 @@
 
     fadeEls.forEach(el => observer.observe(el));
 
-    // Form submission - Netlify Forms
-    const form = document.getElementById('contactForm');
-    if (form) {
-      form.addEventListener('submit', function(e) {
-        const name = document.getElementById('name').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const message = document.getElementById('message').value.trim();
-        if (!name || !phone || !message) {
-          e.preventDefault();
-          alert('请填写必填字段（姓名、联系电话、咨询内容）');
-          return;
-        }
-      });
+    // Form submission via fetch (avoids redirect)
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const message = document.getElementById('message').value.trim();
+      if (!name || !phone || !message) {
+        alert('请填写必填字段（姓名、联系电话、咨询内容）');
+        return;
+      }
+      const form = document.getElementById('contactForm');
+      const data = new FormData(form);
+      fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(data).toString() })
+        .then(() => {
+          alert('感谢您的咨询！您的信息已提交，我们将尽快与您联系。');
+          form.reset();
+        })
+        .catch(() => {
+          alert('提交失败，请稍后重试。或直接拨打 19577897309 联系我们。');
+        });
     }
   </script>
 </body>
